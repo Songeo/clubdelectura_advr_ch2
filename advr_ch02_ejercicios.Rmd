@@ -1,0 +1,181 @@
+---
+title: "Club de lectura - Advanced R📚"
+author: "<br/>RLadies MX 🇲🇽"
+output: html_notebook
+---
+
+----
+
+# Club de lectura
+
+Esta es la parte 1 del club de lectura R Ladies México
+
+Estamos leyendo **Advanced R** de Hadley Wickham.
+
+https://adv-r.hadley.nz/
+
+![](img/bookpage_short.png){width=30%}
+
+
+
+----
+
+# Capitulo 2. Nombres y valores
+
+## Ejercicios
+
+
+### 2.1 Introducción  
+<!--  (Introduction) -->
+
+**Quiz**
+
+1. Dado el siguiente marco de datos, ¿cómo puedo crear una nueva columna llamada "3" que contiene la suma de 1 y 2? Solo puedes usar `$`, no `[[`. ¿Qué hace que 1, 2 y 3 sean complicados como nombres de variables?
+
+```{r}
+df <- data.frame(runif(3), runif(3))
+names(df) <- c(1, 2)
+```
+
+
+
+2. En el siguiente código, ¿cuánta memoria ocupa `y`?
+```{r}
+x <- runif(1e6)
+y <- list(x, x, x)
+```
+
+
+3. En el siguiente ejemplo, ¿en qué línea `a` es una copiado?
+```{r}
+a <- c(1, 5, 3, 2)
+b <- a
+b[[1]] <- 10
+```
+
+
+
+### 2.2 Binding basics
+<!--  (Binding Basics) -->
+
+1. Explica la relación entre `a`, `b`, `c` y `d` en el código siguiente:
+
+```{r}
+a <- 1:10
+b <- a
+c <- b
+d <- 1:10
+```
+
+
+2. El siguiente código accede a la función `mean()` de varias formas. ¿Apuntan todas al mismo objeto de función subyacente? Usa `lobstr::obj_addr()` para verificarlo.
+
+
+```{r}
+mean
+base::mean
+get("mean")
+evalq(mean)
+match.fun("mean")
+```
+
+3. De forma predeterminada, R base importa funciones, como `read.csv()`, que convertirán automáticamente los nombres **no sintácticos** en **sintácticos**. ¿Por qué puede ser esto problemático? ¿Qué opción permite eludir este comportamiento?
+
+
+4. ¿Qué reglas usa `make.names()` para convertir nombres no sintácticos en sintácticos?
+
+5. Simplifiqué ligeramente las reglas que gobiernan los nombres sintácticos. ¿Por qué `.123e1` no es un nombre sintáctico? Consulta `?Make.names` para obtener todos los detalles.
+
+
+### 2.3 Copy-on-modify
+<!--  (Copy-on-modify) -->
+
+1. ¿Por qué `tracemem(1:10)` no es útil?
+
+2. Explica por qué `tracemem()` muestra dos copias cuando ejecuta este código. Sugerencia: observa cuidadosamente la diferencia entre este código y el código que se mostró anteriormente en la sección.
+
+```{r}
+x <- c(1L, 2L, 3L)
+tracemem(x)
+
+x[[3]] <- 4
+```
+
+3. Haz un dibujo de la relación entre los siguientes objetos:
+
+```{r}
+a <- 1:10
+b <- list(a, a)
+c <- list(b, a, 1:10)
+```
+
+4. ¿Qué sucede cuando ejecutas el siguiente código?
+
+```{r}
+x <- list(1:10)
+x[[2]] <- x
+```
+
+Dibújalo. 
+
+
+
+### 2.4 Object size
+<!--  (Object size) -->
+
+1. En el siguiente ejemplo, ¿por qué `object.size(y)` y `obj_size(y)` son tan  diferentes? Consulta la documentación de `object.size()`.
+
+```{r}
+y <- rep(list(runif(1e4)), 100)
+
+object.size(y)
+#> 8005648 bytes
+obj_size(y)
+#> 80,896 B
+```
+
+2. Considera la siguiente lista. ¿Por qué su tamaño es algo engañoso?
+
+```{r}
+funs <- list(mean, sd, var)
+obj_size(funs)
+#> 17,608 B
+```
+
+3. predice la salida del siguiente código:
+
+```{r}
+a <- runif(1e6)
+obj_size(a)
+
+b <- list(a, a)
+obj_size(b)
+obj_size(a, b)
+
+b[[1]][[1]] <- 10
+obj_size(b)
+obj_size(a, b)
+
+b[[2]][[1]] <- 10
+obj_size(b)
+obj_size(a, b)
+```
+
+
+
+### 2.5 Modify-in-place
+<!--  (Modify-in-place) -->
+
+1. Explica por qué el siguiente código no creao un lista circular:
+
+```{r}
+x <- list()
+x[[1]] <- x
+```
+
+2. Envuelva los dos métodos para restar medianas en dos funciones, luego use  `bench package17`  para comparar sus velocidades. ¿Cómo cambia el rendimiento a medida que aumenta el número de columnas?
+
+Wrap the two methods for subtracting medians into two functions, then use the ‘bench’ package17 to carefully compare their speeds. How does performance change as the number of columns increase?
+
+3. ¿Qué sucede si intentas utilizar `tracemem()` en un ambiente?
+
